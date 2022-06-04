@@ -167,7 +167,7 @@ The scripts directory includes an example of how to call each of the functions v
 [Discreet Log Contracts](https://dci.mit.edu/smart-contracts) (DLCs) facilitate conditional payments on Bitcoin between two or more parties. By creating a Discreet Log Contract, two parties can form a monetary contract redistributing their funds to each other without revealing any details to the blockchain. Its appearance on the Bitcoin blockchain will be no different than an ordinary multi-signature output, so no external observer can learn its existence or details from the public ledger. A DLC is similar to a 2-of-3 multisig transaction where the third participant is an “oracle”.  An oracle is a 3rd party source of data or information that the parties to the DLC trust as the source of truth for the contract. The oracle is incentivized to be a fair arbiter of the contract.
 
 # About DLC Link
-DLC.Link is building infrastructure to empower decentralized applications and smart contract developers to easily leverage the power of DLCs (Discreet Log Contract - See section below:Dev Learning ). We provide companies and applications with a traditional REST API and a smart contract interface to create and manage DLCs for their use cases.
+DLC.Link is building infrastructure to empower decentralized applications and smart contract developers to easily leverage the power of DLCs. We provide companies and applications with a traditional REST API and a smart contract interface to create and manage DLCs for their use cases.
 
 DLCs require an oracle to attest to a specific outcome among the predefined set of outcomes. That means trust.
 
