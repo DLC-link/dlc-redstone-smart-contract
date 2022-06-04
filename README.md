@@ -12,14 +12,11 @@ This contract acts to feed the outcome of the DLC. By using a smart contract for
 # How to interact with this contract 
 
 ## Opening a DLC
-When you register a DLC with this contract using the `open-new-dlc` function, a DLC is opened on our DLC server with the associated outcomes (CETs). The DLC *announcement hash*, which needed to fund the DLC, is available on the website, and eventually via an API call and on-chain.
+When you register a DLC with this contract using the `open-new-dlc` function, a DLC is opened on our DLC server with the associated outcomes (CETs) and using the provided asset (e.g. BTC) as a price value to be used within the DLC. The DLC *announcement hash*, which needed to fund the DLC, is available on the website, and eventually via an API call and on-chain.
 
 *(TBD How does the UUID or handle come back to the caller?)*
 
 The creation of a DLC can also be triggered with a traditional JSON API call (*coming soon TBD*)
-
-*Todo: add info about the DLC oracle server*
-*Todo: add info about the overall architecture*
 
 With the announcement hash, you are now able to set up the DLC between the two participants (users, user/protocol, etc.)
 
