@@ -1,4 +1,9 @@
-# DLC Clarity Smart Conract
+# DLC Manager Smart Contract
+
+This smart contract is the interface for creating and closing DLCs via the DLC.Link infrastructure. Upon close, this version of the contract automatically fills pricing data for the underlying asset (e.g. BTC price) of the DLC. For cases where the DLC does not require market prices of assets, please consider using this simpler version of this contract: [DLC Manager without Price Feeds](https://github.com/DLC-link/dlc-clarity-smart-contract)
+
+Learn more about [DLCs](https://github.com/DLC-link/dlc-redstone-smart-contract#What-Are-DLCs) and [DLC.Link](https://github.com/DLC-link/dlc-redstone-smart-contract#About-DLC-Link) below.
+
 
  ## Deployment can be found here: [discreet-log-storage-v3](https://explorer.stacks.co/txid/ST31H4TTX6TVMEE86TYV6PN6XPQ6J7NCS2DD0XFW0.discreet-log-storage-v3?chain=testnet)
 
