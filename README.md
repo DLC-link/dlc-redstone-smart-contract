@@ -4,8 +4,34 @@ This smart contract is the interface for creating and closing DLCs via the DLC.L
 
 Learn more about [DLCs](https://github.com/DLC-link/dlc-redstone-smart-contract#What-Are-DLCs) and [DLC.Link](https://github.com/DLC-link/dlc-redstone-smart-contract#About-DLC-Link) below.
 
+# Overview
+A DLC requires an oracle to attest to a specific outcome among the predefined set of outcomes. That means trust.
 
- ## Deployment can be found here: [discreet-log-storage-v3](https://explorer.stacks.co/txid/ST31H4TTX6TVMEE86TYV6PN6XPQ6J7NCS2DD0XFW0.discreet-log-storage-v3?chain=testnet)
+This contract acts to feed the outcome of the DLC. By using a smart contract for this task, the implementation of the logic, as well as the data being used, is stamped on the chain, and is visible and reviewable by everyone. 
+
+# How to interact with this contract 
+
+## Opening a DLC
+When you register a DLC with this contract using the `open-new-dlc` function, a DLC is opened on our DLC server with the associated outcomes (CETs). The DLC *announcement hash*, which needed to fund the DLC, is available on the website, and eventually via an API call and on-chain.
+
+*(TBD How does the UUID or handle come back to the caller?)*
+
+The creation of a DLC can also be triggered with a traditional JSON API call (*coming soon TBD*)
+
+*Todo: add info about the DLC oracle server*
+*Todo: add info about the overall architecture*
+
+With the announcement hash, you are now able to set up the DLC between the two participants (users, user/protocol, etc.)
+
+## Closing the DLC
+The DLC will be closed when the `principal` who opened the contract chooses to close it. When the contract function is called, the contract connects to the Redstone oracle network to pull the price of the associated asset. The DLC.Link backend system catches this event and closes the DLC in the DLC oracle with the associated outcome data. An *attestation hash* is now created and like the announcement hash, can be acquired via the website or API (or eventually smart contract).
+
+The attestation hash is what will be used by the participants (user, protocol, etc.) to unlock the funds in the DLC.
+
+# Contributing
+We are happy to have support and contribution from the community. Please find us on Discord and see below for developer details.
+
+For reference, a sample of this deployed contract can be found here: [discreet-log-storage-v3](https://explorer.stacks.co/txid/ST31H4TTX6TVMEE86TYV6PN6XPQ6J7NCS2DD0XFW0.discreet-log-storage-v3?chain=testnet)
 
 # Setup
 Add `secrets.js` file with the following fields:
@@ -131,5 +157,26 @@ Flow of the oracle requests:
 1. submit trusted oracle (node public keys can be found [here](https://github.com/redstone-finance/redstone-node/blob/main/src/config/nodes.json), this repo uses `redstone`) 
 2. when trying to close a DLC, submit a `timestamp`, `data package` and a `signature` as well with the UUID, which can be obtained from the [redstone-api-extended](https://www.npmjs.com/package/redstone-api-extended) module. For reference check the `close-dlc.ts` script.
 
-# NOTES
+# Notes
 closing-price comming from the oracle is not scaled eg.: BTC price: 3036091214130 needs to be divided by 10 ** 8 on the client side
+
+# Scripts
+The scripts directory includes an example of how to call each of the functions via JS. These can be used to learn about the functionality of the contract, as well as for calling to the contract. 
+
+# What Are DLCs
+[Discreet Log Contracts](https://dci.mit.edu/smart-contracts) (DLCs) facilitate conditional payments on Bitcoin between two or more parties. By creating a Discreet Log Contract, two parties can form a monetary contract redistributing their funds to each other without revealing any details to the blockchain. Its appearance on the Bitcoin blockchain will be no different than an ordinary multi-signature output, so no external observer can learn its existence or details from the public ledger. A DLC is similar to a 2-of-3 multisig transaction where the third participant is an “oracle”.  An oracle is a 3rd party source of data or information that the parties to the DLC trust as the source of truth for the contract. The oracle is incentivized to be a fair arbiter of the contract.
+
+# About DLC Link
+DLC.Link is building infrastructure to empower decentralized applications and smart contract developers to easily leverage the power of DLCs (Discreet Log Contract - See section below:Dev Learning ). We provide companies and applications with a traditional REST API and a smart contract interface to create and manage DLCs for their use cases.
+
+DLCs require an oracle to attest to a specific outcome among the predefined set of outcomes. That means trust.
+
+Why power DLC oracles with smart contracts? By using a smart contract for this task, the implementation of the logic, as well as the data being used, is stamped on the chain, and is *visible and reviewable* by everyone. 
+
+Unlike other DLC Oracle server solutions, DLC.link allows the DLCs to be configured with a simple interface, API or via smart contract, and to act on a wide-set of events and data sources through our decentralized infrastructure. 
+
+There are two types of events / data sources supported by DLC.link.
+
+1. Off-chain pricing data, such as the current price of BTC, ETH, etc. In fact, any numeric data from Redstone Oracle Network is supported.
+
+2. On-chain events, such as a completed transaction, a function call, etc. (Also, because Stacks can read the state of the BTC blockchain, actions can be taken directly on Stacks in response to funding transactions of DLCs on BTC. *This is continuing to be researched, and may be dependent on this project: https://grants.stacks.org/dashboard/grants/235)
