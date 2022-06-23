@@ -51,12 +51,19 @@
       actual-closing-time: u0, 
       emergency-refund-time: emergency-refund-time,
       creator: creator })
+    (print {
+      uuid: uuid, 
+      asset: asset, 
+      closing-time: closing-time,
+      emergency-refund-time: emergency-refund-time,
+      creator: creator })
     (nft-mint? open-dlc uuid .discreet-log-storage-v5))) ;;mint an open-dlc nft to keep track of open dlcs
 
 ;;emits an event
-(define-public (create-dlc (asset (buff 32)) (closing-time uint) (emergency-refund-time uint))
+(define-public (create-dlc (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint))
   (begin 
     (print {
+      uuid: uuid,
       asset: asset, 
       closing-time: closing-time, 
       emergency-refund-time: emergency-refund-time,
@@ -81,6 +88,10 @@
     (asserts! (is-none (get closing-price dlc)) err-already-closed)
     (asserts! (or (is-eq contract-owner tx-sender) (is-eq (get creator dlc) tx-sender)) err-unauthorised)
     (map-set dlcs uuid (merge dlc { closing-price: (get value (element-at entries u0)), actual-closing-time: (/ timestamp u1000) })) ;;timestamp is in milliseconds so we have to convert it to seconds to keep the timestamps consistent
+    (print {
+      uuid: uuid,
+      closing-price: (get value (element-at entries u0)),
+      actual-closing-time: (/ timestamp u1000)})
     (nft-burn? open-dlc uuid .discreet-log-storage-v5))) ;;burn the open-dlc nft related to the UUID
 
 
@@ -102,6 +113,10 @@
     (asserts! (is-none (get closing-price dlc)) err-already-closed)
     (asserts! (or (is-eq contract-owner tx-sender) (is-eq (get creator dlc) tx-sender)) err-unauthorised)
     (map-set dlcs uuid (merge dlc { closing-price: (get value (element-at entries u0)), actual-closing-time: (/ timestamp u1000) })) ;;timestamp is in milliseconds so we have to convert it to seconds to keep the timestamps consistent
+    (print {
+      uuid: uuid,
+      closing-price: (get value (element-at entries u0)),
+      actual-closing-time: (/ timestamp u1000)})
     (nft-burn? open-dlc uuid .discreet-log-storage-v5))) ;;burn the open-dlc nft related to the UUID
 
 ;; get the closing price of the DLC by UUID

@@ -66,7 +66,7 @@ Clarinet.test({
         const deployer = accounts.get('deployer')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "create-dlc", [types.buff(BTChex), types.uint(10), types.uint(10)], deployer.address)
+            Tx.contractCall(contractName, "create-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10)], deployer.address)
         ]);
 
         block.receipts[0].result.expectOk().expectBool(true);
@@ -81,7 +81,7 @@ Clarinet.test({
 
 
 Clarinet.test({
-    name: "open-new-dlc creates a new dlc and mints an open-dlc nft",
+    name: "open-new-dlc creates a new dlc, prints an event and mints an open-dlc nft",
     async fn(chain: Chain, accounts: Map<string, Account>) {
         const deployer = accounts.get('deployer')!;
         const wallet_1 = accounts.get('wallet_1')!;
@@ -92,12 +92,20 @@ Clarinet.test({
         ]);
 
         block.receipts[0].result.expectOk().expectBool(true);
-        const event = block.receipts[0].events[0];
 
-        assertEquals(typeof event, 'object');
-        assertEquals(event.type, 'nft_mint_event');
-        assertEquals(event.nft_mint_event.asset_identifier.split("::")[1], nftAssetContract);
-        assertEquals(event.nft_mint_event.recipient.split(".")[1], contractName);
+        const printEvent = block.receipts[0].events[0];
+
+        assertEquals(typeof printEvent, 'object');
+        assertEquals(printEvent.type, 'contract_event');
+        assertEquals(printEvent.contract_event.topic, "print");
+        assertStringIncludes(printEvent.contract_event.value, "asset: 0x425443, closing-time: u10, creator: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5, emergency-refund-time: u10, uuid: 0x66616b6575756964")
+
+        const mintEvent = block.receipts[0].events[1];
+
+        assertEquals(typeof mintEvent, 'object');
+        assertEquals(mintEvent.type, 'nft_mint_event');
+        assertEquals(mintEvent.nft_mint_event.asset_identifier.split("::")[1], nftAssetContract);
+        assertEquals(mintEvent.nft_mint_event.recipient.split(".")[1], contractName);
 
         const dlc: any = block.receipts[1].result.expectSome().expectTuple();
 
