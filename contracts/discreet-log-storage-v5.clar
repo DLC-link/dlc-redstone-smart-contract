@@ -59,7 +59,12 @@
       creator: creator })
     (nft-mint? open-dlc uuid .discreet-log-storage-v5))) ;;mint an open-dlc nft to keep track of open dlcs
 
-;;emits an event
+;;emits an event - see README for more details
+;;UUID: a unique 8 character string
+;;asset: the ticker symbol for the asset that will be used to closing price data, e.g. 'btc' (https://github.com/redstone-finance/redstone-api/blob/main/docs/ALL_SUPPORTED_TOKENS.md)
+;;strike-price: the over/under price for the DLC bet
+;;closing-time: the UTC time in seconds after which the contract can be closed, and will fetch the closing price
+;;emergency-refund-time: the time at which the DLC will be available for refund
 (define-public (create-dlc (uuid (buff 8)) (asset (buff 32)) (strike-price uint) (closing-time uint) (emergency-refund-time uint))
   (begin 
     (print {
