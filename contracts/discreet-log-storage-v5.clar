@@ -60,11 +60,12 @@
     (nft-mint? open-dlc uuid .discreet-log-storage-v5))) ;;mint an open-dlc nft to keep track of open dlcs
 
 ;;emits an event
-(define-public (create-dlc (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint))
+(define-public (create-dlc (uuid (buff 8)) (asset (buff 32)) (strike-price uint) (closing-time uint) (emergency-refund-time uint))
   (begin 
     (print {
       uuid: uuid,
       asset: asset, 
+      strike-price: strike-price,
       closing-time: closing-time, 
       emergency-refund-time: emergency-refund-time,
       creator: tx-sender})

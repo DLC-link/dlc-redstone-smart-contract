@@ -66,7 +66,7 @@ Clarinet.test({
         const deployer = accounts.get('deployer')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "create-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10)], deployer.address)
+            Tx.contractCall(contractName, "create-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(20000), types.uint(10), types.uint(10)], deployer.address)
         ]);
 
         block.receipts[0].result.expectOk().expectBool(true);
@@ -76,6 +76,7 @@ Clarinet.test({
         assertEquals(event.type, 'contract_event');
         assertEquals(event.contract_event.topic, "print");
         assertStringIncludes(event.contract_event.value, "asset: 0x425443")
+        assertStringIncludes(event.contract_event.value, "strike-price: u20000")
     },
 });
 
