@@ -1,15 +1,21 @@
 import * as secrets from '../secrets';
-import { StacksTestnet } from "@stacks/network";
+import { StacksMocknet, StacksTestnet } from "@stacks/network";
 
-export const network = new StacksTestnet();
+// const env = 'production';
+const env = secrets.env;
+// const isProd = env == 'production';
+const isProd = true;
+
+export const network = isProd ? new StacksTestnet() : new StacksMocknet();
 
 export const senderAddress = secrets.publicKey;
 export const senderKey = secrets.privateKey;
-export const assetName = 'open-dlc';
+export const assetName = 'BTC';
+export const tokenName = 'open-dlc';
 
-export const contractAddress = "ST31H4TTX6TVMEE86TYV6PN6XPQ6J7NCS2DD0XFW0";
+export const contractAddress = "ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R";
 export const contractName = "discreet-log-storage-v5";
 
-export const unixTimeStamp = 1653308114;
+export const unixTimeStamp = 1656085064;
 
-export const UUID = "uuid1";
+export const UUID = "uuid70";

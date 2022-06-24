@@ -14,7 +14,7 @@ const txOptions = {
   functionArgs: [
     bufferCVFromString(UUID),
   ],
-  senderAddress: senderAddress,
+  senderAddress: contractAddress,
   network,
 };
 

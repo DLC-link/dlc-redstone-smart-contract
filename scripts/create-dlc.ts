@@ -4,6 +4,9 @@ import {
   senderKey,
   contractAddress,
   contractName,
+  UUID,
+  assetName,
+  unixTimeStamp
 } from "./common";
 
 import {
@@ -21,9 +24,10 @@ const txOptions = {
   contractName: contractName,
   functionName: functionName,
   functionArgs: [
-    bufferCVFromString("BTC"), // asset
-    uintCV(1651243090), // closing-time
-    uintCV(1651243090), // emergency-refund-time
+    bufferCVFromString(UUID),
+    bufferCVFromString(assetName), // asset
+    uintCV(unixTimeStamp), // closing-time
+    uintCV(unixTimeStamp), // emergency-refund-time
   ],
   senderKey: senderKey,
   validateWithAbi: true,

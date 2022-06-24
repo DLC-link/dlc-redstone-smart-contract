@@ -1,4 +1,4 @@
-import { network, senderAddress, senderKey, contractAddress, contractName, UUID, assetName } from './common'
+import { network, senderAddress, senderKey, contractAddress, contractName, UUID, assetName, tokenName } from './common'
 import redstone from 'redstone-api-extended';
 import { makeContractCall, broadcastTransaction, bufferCV, trueCV, uintCV, listCV, bufferCVFromString,tupleCV, makeContractNonFungiblePostCondition, createAssetInfo, NonFungibleConditionCode } from "@stacks/transactions";
 import { Buffer } from '@stacks/common';
@@ -8,7 +8,7 @@ const functionName = "close-dlc";
 
 const postConditionCode = NonFungibleConditionCode.DoesNotOwn;
 const tokenAssetName = bufferCVFromString(UUID);
-const nonFungibleAssetInfo = createAssetInfo(contractAddress, contractName, assetName);
+const nonFungibleAssetInfo = createAssetInfo(contractAddress, contractName, tokenName);
 
 const contractNonFungiblePostCondition = makeContractNonFungiblePostCondition(
   contractAddress,
@@ -46,13 +46,13 @@ function populateTxOptions(price: number, timestamp: number, signature: string, 
 }
 
 async function main() {
-  const dataPackage = await redstone.oracle.getFromDataFeed("redstone", "ETH");
+  const dataPackage = await redstone.oracle.getFromDataFeed("redstone", assetName);
   console.log(dataPackage);
   
   //these values needs to be passed uppon close to set the close price of the asset in the DLC 
   const liteEvmSignature = dataPackage.liteSignature;
   //const symbol = dataPackage.priceData.symbols[0];
-  const symbol = "ETH";
+  const symbol = assetName;
   const price = dataPackage.priceData.values[0];
   const timestamp = dataPackage.priceData.timestamp
 

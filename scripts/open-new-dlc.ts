@@ -6,6 +6,7 @@ import {
   contractName,
   UUID,
   unixTimeStamp,
+  assetName
 } from "./common";
 import {
   makeContractCall,
@@ -23,10 +24,10 @@ const txOptions = {
   functionName: functionName,
   functionArgs: [
     bufferCVFromString(UUID), // uuid
-    bufferCVFromString("ETH"), // asset
+    bufferCVFromString(assetName), // asset
     uintCV(unixTimeStamp), // closing-time
     uintCV(unixTimeStamp), // emergency-refund-time
-    standardPrincipalCV("STWYKHG01H1RPXB4Z74SM3CMGB3SGCWVYV9YEHHZ"), // creator
+    standardPrincipalCV("ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R"), // creator
   ],
   senderKey: senderKey,
   validateWithAbi: true,
