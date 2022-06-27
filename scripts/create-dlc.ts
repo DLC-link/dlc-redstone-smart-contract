@@ -6,7 +6,8 @@ import {
   contractName,
   UUID,
   assetName,
-  unixTimeStamp
+  unixTimeStamp,
+  strikePrice
 } from "./common";
 
 import {
@@ -26,6 +27,7 @@ const txOptions = {
   functionArgs: [
     bufferCVFromString(UUID),
     bufferCVFromString(assetName), // asset
+    uintCV(strikePrice),
     uintCV(unixTimeStamp), // closing-time
     uintCV(unixTimeStamp), // emergency-refund-time
   ],
