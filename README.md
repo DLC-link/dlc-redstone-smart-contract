@@ -47,12 +47,14 @@ For reference, a sample of this deployed contract can be found here: [discreet-l
 
 # Setup
 
-Add `secrets.js` file with the following fields:
+Add `secrets.ts` file with the following fields:
 
 ```js
 export const publicKey = "";
 export const privateKey = "";
 export const mnemonic = "";
+
+export const env = "";
 ```
 
 `publicKey`: your wallet public key
@@ -60,6 +62,8 @@ export const mnemonic = "";
 `privateKey`: your private key corresponds to the public key (can be extracted with pk-extractor.js)
 
 `mnemonic`: your menomic seed phrase
+
+`env`: currently 'production' for testnet, and 'development' for devnet
 
 # Tests
 
