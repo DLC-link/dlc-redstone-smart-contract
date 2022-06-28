@@ -11,7 +11,7 @@ import type { PricePackage, Block } from "./deps.ts";
 const BTChex = "BTC";
 const UUID = "fakeuuid";
 const nftAssetContract = "open-dlc";
-const contractName = "discreet-log-storage-v5";
+const contractName = "discreet-log-storage-v5-1";
 
 const trustedOraclePubkey = "0x035ca791fed34bf9e9d54c0ce4b9626e1382cf13daa46aa58b657389c24a751cc6";
 const untrustedOraclePubkey = "0x03cd2cfdbd2ad9332828a7a13ef62cb999e063421c708e863a7ffed71fb61c88c9";
