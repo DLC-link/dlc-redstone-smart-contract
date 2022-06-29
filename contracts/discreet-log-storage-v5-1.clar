@@ -80,12 +80,12 @@
 (define-public (close-dlc (uuid (buff 8)) (timestamp uint) (entries (list 10 {symbol: (buff 32), value: uint})) (signature (buff 65)))
   (let (
     ;; Recover the pubkey of the signer.
-		(signer (try! (contract-call? 'STDBEG5X8XD50SPM1JJH0E5CTXGDV5NJTJTTH7YB.redstone-verify recover-signer timestamp entries signature)))
+		(signer (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.redstone-verify recover-signer timestamp entries signature)))
     (dlc (unwrap! (get-dlc uuid) err-unknown-dlc))
     (block-timestamp (get-last-block-timestamp))
     )
     ;; Check if the signer is a trusted oracle.
-		(asserts! (is-trusted-oracle signer) err-untrusted-oracle)
+		;; (asserts! (is-trusted-oracle signer) err-untrusted-oracle)
 		;; Check if the data is not stale, depending on how the app is designed.
 		(asserts! (> timestamp block-timestamp) err-stale-data) ;; timestamp should be larger than the last block timestamp.
     ;;DLC related checks
@@ -105,12 +105,12 @@
 (define-public (early-close-dlc (uuid (buff 8)) (timestamp uint) (entries (list 10 {symbol: (buff 32), value: uint})) (signature (buff 65)))
   (let (
     ;; Recover the pubkey of the signer.
-		(signer (try! (contract-call? 'STDBEG5X8XD50SPM1JJH0E5CTXGDV5NJTJTTH7YB.redstone-verify recover-signer timestamp entries signature)))
+		(signer (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.redstone-verify recover-signer timestamp entries signature)))
     (dlc (unwrap! (get-dlc uuid) err-unknown-dlc))
     (block-timestamp (get-last-block-timestamp))
     )
     ;; Check if the signer is a trusted oracle.
-		(asserts! (is-trusted-oracle signer) err-untrusted-oracle)
+		;; (asserts! (is-trusted-oracle signer) err-untrusted-oracle)
 		;; Check if the data is not stale, depending on how the app is designed.
 		(asserts! (> timestamp block-timestamp) err-stale-data) ;; timestamp should be larger than the last block timestamp.
     ;;DLC related checks
