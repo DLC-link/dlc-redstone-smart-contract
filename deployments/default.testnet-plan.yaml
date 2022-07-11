@@ -8,7 +8,7 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: discreet-log-storage-v5-1
+            contract-name: dlc-manager-pricefeed-v1
             expected-sender: ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R
-            path: contracts/discreet-log-storage-v5-1.clar
-            cost: 72010
+            path: contracts/dlc-manager-pricefeed.clar
+            cost: 62690
