@@ -1,13 +1,13 @@
 [project]
 name = "DLC-Clarity-Smart-Contract-Redstone"
 
-# [[project.requirements]]
-# contract_id = "STDBEG5X8XD50SPM1JJH0E5CTXGDV5NJTJTTH7YB.redstone-verify"
+[[project.requirements]]
+contract_id = "STDBEG5X8XD50SPM1JJH0E5CTXGDV5NJTJTTH7YB.redstone-verify"
 
-[contracts.discreet-log-storage-v5-1]
-path = "contracts/discreet-log-storage-v5-1.clar"
+[contracts.dlc-manager-pricefeed-v1]
+path = "contracts/dlc-manager-pricefeed.clar"
 depends_on = []
 
-[contracts.redstone-verify]
-path = "contracts/external/redstone-verify.clar"
-depends_on = []
+# [contracts.redstone-verify]
+# path = "contracts/external/redstone-verify.clar"
+# depends_on = []
