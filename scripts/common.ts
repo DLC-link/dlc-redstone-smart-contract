@@ -12,10 +12,10 @@ export const senderKey = secrets.privateKey;
 export const tokenName = 'open-dlc';
 
 export const contractAddress = isProd ? "ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R" : "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM";
-export const contractName = "discreet-log-storage-v5-1";
+export const contractName = "dlc-manager-pricefeed-v1";
 
 // Generally only changing these for the scripts:
 export const assetName = 'BTC';
-export const strikePrice = 22222;
-export const unixTimeStamp = 1656516644;
-export const UUID = "uuid84";
+export const strikePrice = 20222;
+export const unixTimeStamp = 1657554601;
+export const UUID = "uuid03";
