@@ -46,30 +46,45 @@ We are happy to have support and contribution from the community. Please find us
 
 For reference, a sample of this deployed contract can be found here: [dlc-manager-pricefeed-v1](https://explorer.stacks.co/txid/ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R.dlc-manager-pricefeed-v1?chain=testnet)
 
-# Setup
+# Setup Development Environment
 
 Add `secrets.ts` file with the following fields:
 
 ```js
+export const env = "";
 export const publicKey = "";
 export const privateKey = "";
 export const mnemonic = "";
-
-export const env = "";
 ```
+
+`env`: currently 'production' for testnet, and 'development' for devnet
 
 `publicKey`: your wallet public key
 
-`privateKey`: your private key corresponds to the public key (can be extracted with pk-extractor.js)
+`privateKey`: your private key corresponding to the public key (can be extracted with pk-extractor.js)
 
 `mnemonic`: your mnenomic seed phrase
 
-`env`: currently 'production' for testnet, and 'development' for devnet
 
 
 ## redstone-verify.clar
 
 The Redstone data-package verification contract is included in the `contracts/external/` folder for the purposes of deploying it during Mocknet testing. In production, the on-chain contract is used, which can be found here: [redstone-verify.](https://explorer.stacks.co/txid/0x35952be366691c79243cc0fc43cfcf90ae71ed66a9b6d9578b167c28965bbf7e?chain=testnet)
+
+## Deploying to Mocknet
+
+Fully testing the contract requires running instances of the DLC oracles and the backend service, which is not yet open-sourced. However, steps of a deployment to a local integration mocknet is still provided here for posterity:
+
+1. Update `secrets.ts` information with the mocknet deployer keys found in `Devnet.toml`
+2. Change `env` to `"development"` in `secrets.ts`
+3. In `Clarinet.toml`: comment out the `project.requirements` lines (4-5)
+4. In `Clarinet.toml`: uncomment the 3 lines about the redstone-verify contract (11-13)
+5. In the `dlc-manager-pricefeed.clar` file, update the redstone-verify contract's principal address to the mocknet deployer's: `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM`
+6. If you changed anything else in the contract, regenerate the deployment plan:
+   1. `$ clarinet deployments generate --devnet`
+7. Launch the integration blockchain (docker must be running):
+   1. `$ clarinet integrate`
+
 
 # Tests
 
