@@ -17,6 +17,7 @@
         "@stacks/network": "^3.3.0",
         "@stacks/transactions": "^3.3.0",
         "@stacks/wallet-sdk": "^3.4.0",
+        "dotenv": "^16.0.1",
         "node-fetch": "^2.6.7",
         "redstone-api-extended": "^1.0.9"
     }

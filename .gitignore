@@ -4,6 +4,8 @@ package-lock.json
 
 secrets.ts
 
+.env
+
 settings/Mainnet.toml
 settings/Testnet.toml
 history.txt
