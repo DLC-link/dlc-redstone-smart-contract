@@ -48,28 +48,28 @@ For reference, a sample of this deployed contract can be found here: [dlc-manage
 
 # Setup Development Environment
 
-Add `secrets.ts` file with the following fields:
+Create a `.env` file with the following fields:
 
 ```js
-export const env = "";
-export const publicKey = "";
-export const privateKey = "";
-export const mnemonic = "";
+NODE_ENV=[ENV]
+PRIVATE_KEY=[PRIVATE_KEY]
+MNEMONIC=[MNEMONIC]
 ```
 
-`env`: currently 'production' for testnet, and 'development' for devnet
+`ENV`: 'devnet' | 'testnet' | 'mainnet'
 
-`publicKey`: your wallet public key
+`PRIVATE_KEY`: your private key on the given chain (can be extracted with pk-extractor.js)
 
-`privateKey`: your private key corresponding to the public key (can be extracted with pk-extractor.js)
-
-`mnemonic`: your mnenomic seed phrase
-
+`MNEMONIC`: your mnenomic seed phrase (only required for the pk-extractor.js)
 
 
 ## redstone-verify.clar
 
-The Redstone data-package verification contract is included in the `contracts/external/` folder for the purposes of deploying it during Mocknet testing. In production, the on-chain contract is used, which can be found here: [redstone-verify.](https://explorer.stacks.co/txid/0x35952be366691c79243cc0fc43cfcf90ae71ed66a9b6d9578b167c28965bbf7e?chain=testnet)
+The Redstone data-package verification contract is included in the `contracts/external/` folder for the purposes of deploying it during Mocknet testing. In production and testnet, the on-chain contracts are used, which can be found here: 
+
+[redstone-verify on Testnet](https://explorer.stacks.co/txid/0x35952be366691c79243cc0fc43cfcf90ae71ed66a9b6d9578b167c28965bbf7e?chain=testnet)
+
+[redstone-verify on Mainnet](https://explorer.stacks.co/txid/0x8de1fb0a41d6a8a962c8016c3a5178176fc51c206afa72f71f5747a6246a37bb?chain=mainnet)
 
 ## Deploying to Mocknet
 
@@ -162,19 +162,17 @@ The response looks like this where the UUID is the `repr` key in a hex format.
 
 # Close DLC
 
-Generally a user/protocol would call the `close-dlc` function, providing a UUID. This through our oracle network would call the close-dlc-internal function with the required oracle data. (You can see an example of what's happening behind the scenes in the [close-dlc-internal.ts](scripts/close-dlc-internal.ts) file.)
+The same user/protocol that created the DLC can call the `close-dlc` function, by providing the necessary UUID. Behind the scenes the DLC.Link infrastructure will use the `close-dlc-internal` function and generate the DLC closing hash, and send it back to the protocol / user to be used to close the DLC in their wallets. (You can see an example of what's happening behind the scenes in the [close-dlc-internal.ts](scripts/close-dlc-internal.ts) file.)
 
-The reason for this is as follows:
+The close is handled in two steps because much of the information required/provided by the Redstone oracle system (`timestamp`, `data package`, `signature`) can be generated automatically, thus we can save the user/protocol the hassle of doing so. The resulting data package is verified on-chain in the second step, eliminating any trust in the DLC oracle system.
 
-To fully close a dlc a `timestamp`, `data package` and a `signature` needs to be submitted along with the `UUID`.
-
-For reference check the close-dlc-internal.ts script. You can run it with (if you are the contract-deployer):
+For reference about what's happening on our oracle system, check the close-dlc-internal.ts script. You can run it with (if you are the contract-deployer):
 
 ```console
 npx ts-node scripts/close-dlc-internal.ts
 ```
 
-**_NOTE:_** To close a DLC successfully you have to set a trusted oracle first (the oracle used in the contract and scripts is already set)
+**_NOTE:_** To close a DLC successfully you have to set a trusted oracle first (the oracle used in the deployed contract and scripts is already set on Testnet)
 
 ```console
 npx ts-node scripts/set_oracle.ts
@@ -210,7 +208,7 @@ Refresh the page if it says not found.
 
 **_NOTE:_** the integration so this implementation as well depends on [micro-stacks](https://github.com/fungible-systems/micro-stacks) which is in alpha state and not audited, so use this in production with caution.
 
-Flow of the oracle requests:
+Flow of the Redstone oracle requests:
 
 1. submit trusted oracle (node public keys can be found [here](https://github.com/redstone-finance/redstone-node/blob/main/src/config/nodes.json), this repo uses `redstone`)
 2. when trying to close a DLC, submit a `timestamp`, `data package` and a `signature` as well with the UUID, which can be obtained from the [redstone-api-extended](https://www.npmjs.com/package/redstone-api-extended) module. For reference check the `close-dlc-internal.ts` script.

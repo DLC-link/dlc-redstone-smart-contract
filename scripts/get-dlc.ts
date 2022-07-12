@@ -1,4 +1,4 @@
-import {network, senderAddress, senderKey, contractAddress, contractName, UUID} from './common'
+import { network, contractAddress, contractName, UUID } from './common'
 import {
   bufferCVFromString,
   callReadOnlyFunction,

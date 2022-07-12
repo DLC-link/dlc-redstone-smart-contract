@@ -1,6 +1,5 @@
 import {
   network,
-  senderAddress,
   senderKey,
   contractAddress,
   contractName,
@@ -11,7 +10,6 @@ import {
   broadcastTransaction,
   bufferCV,
   trueCV,
-  serializeCV,
 } from "@stacks/transactions";
 
 import { Buffer } from "@stacks/common";

@@ -1,6 +1,5 @@
 import {
   network,
-  senderAddress,
   senderKey,
   contractAddress,
   contractName,

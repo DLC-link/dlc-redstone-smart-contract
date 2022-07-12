@@ -1,6 +1,5 @@
 import {
   network,
-  senderAddress,
   senderKey,
   contractAddress,
   contractName,
@@ -24,7 +23,7 @@ const txOptions = {
   contractName: contractName,
   functionName: functionName,
   functionArgs: [bufferCV(buffer)],
-  senderAddress: senderAddress,
+  senderAddress: contractAddress,
   network,
 };
 
