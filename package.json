@@ -6,6 +6,7 @@
     },
     "devDependencies": {
         "@noble/hashes": "1.0.0",
+        "@types/node": "^18.0.3",
         "@types/node-fetch": "^2.6.1",
         "micro-stacks": "0.2.3",
         "redstone-node": "0.4.27",
@@ -19,6 +20,7 @@
         "@stacks/wallet-sdk": "^3.4.0",
         "dotenv": "^16.0.1",
         "node-fetch": "^2.6.7",
+        "redstone-api": "^0.4.11",
         "redstone-api-extended": "^1.0.9"
     }
 }

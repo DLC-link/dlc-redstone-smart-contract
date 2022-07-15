@@ -8,7 +8,7 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: dlc-manager-pricefeed-v1
+            contract-name: dlc-manager-pricefeed-v1-01
             expected-sender: ST12S2DB1PKRM1BJ1G5BQS0AB0QPKHRVHWXDBJ27R
             path: contracts/dlc-manager-pricefeed.clar
-            cost: 62690
+            cost: 63690

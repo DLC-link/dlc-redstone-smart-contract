@@ -3,9 +3,9 @@ dotenv.config();
 
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 
-const env = process.env.NODE_ENV as 'development' | 'testnet' | 'production';
+const env = process.env.NODE_ENV as 'mocknet' | 'testnet' | 'mainnet';
 
-const development = {
+const mocknet = {
   network: new StacksMocknet(),
   contractAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   privateKey: '753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601',
@@ -19,7 +19,7 @@ const testnet = {
   mnemonic: process.env.MNEMONIC as string
 }
 
-const production = {
+const mainnet = {
   network: new StacksMainnet(),
   contractAddress: "",
   privateKey: process.env.PRIVATE_KEY as string,
@@ -27,9 +27,9 @@ const production = {
 }
 
 const environments = {
-  development,
+  mocknet,
   testnet,
-  production
+  mainnet
 }
 
 export const config = environments[env];

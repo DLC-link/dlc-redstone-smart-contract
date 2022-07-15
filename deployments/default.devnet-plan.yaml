@@ -13,7 +13,7 @@ plan:
             path: contracts/external/redstone-verify.clar
             cost: 45390
         - contract-publish:
-            contract-name: dlc-manager-pricefeed-v1
+            contract-name: dlc-manager-pricefeed-v1-01
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/dlc-manager-pricefeed.clar
             cost: 62730

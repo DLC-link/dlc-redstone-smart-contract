@@ -11,7 +11,7 @@ import type { PricePackage, Block } from "./deps.ts";
 const BTChex = "BTC";
 const UUID = "fakeuuid";
 const nftAssetContract = "open-dlc";
-const contractName = "dlc-manager-pricefeed-v1";
+const contractName = "dlc-manager-pricefeed-v1-01";
 
 const trustedOraclePubkey = "0x035ca791fed34bf9e9d54c0ce4b9626e1382cf13daa46aa58b657389c24a751cc6";
 const untrustedOraclePubkey = "0x03cd2cfdbd2ad9332828a7a13ef62cb999e063421c708e863a7ffed71fb61c88c9";
@@ -82,13 +82,13 @@ Clarinet.test({
 
 
 Clarinet.test({
-    name: "open-new-dlc creates a new dlc, prints an event and mints an open-dlc nft",
+    name: "create-dlc-internal creates a new dlc, prints an event and mints an open-dlc nft",
     async fn(chain: Chain, accounts: Map<string, Account>) {
         const deployer = accounts.get('deployer')!;
         const wallet_1 = accounts.get('wallet_1')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "get-dlc", [types.buff(UUID)], deployer.address)
         ]);
 
@@ -124,8 +124,8 @@ Clarinet.test({
         const wallet_1 = accounts.get('wallet_1')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address),
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address)
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], deployer.address)
         ]);
 
         const err = block.receipts[1].result.expectErr();
@@ -139,7 +139,7 @@ Clarinet.test({
         const wallet_1 = accounts.get('wallet_1')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], wallet_1.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(10), types.uint(10), types.principal(wallet_1.address)], wallet_1.address),
         ]);
 
         const err = block.receipts[0].result.expectErr();
@@ -156,7 +156,7 @@ Clarinet.test({
       setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc", [types.buff(UUID)], wallet_1.address),
         ]);
 
@@ -180,7 +180,7 @@ Clarinet.test({
       setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "early-close-dlc", [types.buff(UUID)], deployer.address),
         ]);
 
@@ -203,7 +203,7 @@ Clarinet.test({
 
       let block = chain.mineBlock([
           Tx.contractCall(contractName, "set-trusted-oracle", [trustedOraclePubkey, types.bool(true)], deployer.address),
-          Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(5), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+          Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(5), types.uint(0), types.principal(wallet_1.address)], deployer.address),
           Tx.contractCall(contractName, "early-close-dlc", [types.buff(UUID)], wallet_1.address),
       ]);
 
@@ -221,7 +221,7 @@ Clarinet.test({
         setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc-internal", [types.buff(UUID), packageCV.timestamp, packageCV.prices, signature], deployer.address),
             Tx.contractCall(contractName, "get-dlc", [types.buff(UUID)], deployer.address)
         ]);
@@ -270,7 +270,7 @@ Clarinet.test({
         setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc-internal", [types.buff(UUID), wrongPackageCV.timestamp, wrongPackageCV.prices, wrongPackageSingature], deployer.address),
         ]);
 
@@ -288,7 +288,7 @@ Clarinet.test({
         setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc-internal", [types.buff(UUID), packageCV.timestamp, packageCV.prices, signature], deployer.address),
             Tx.contractCall(contractName, "close-dlc", [types.buff(UUID)], wallet_1.address),
         ]);
@@ -308,7 +308,7 @@ Clarinet.test({
         setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc", [types.buff(UUID)], wallet_2.address),
         ]);
 
@@ -327,7 +327,7 @@ Clarinet.test({
         const wallet_2 = accounts.get('wallet_2')!;
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(5), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(5), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "get-dlc-closing-price-and-time", [types.buff(UUID)], wallet_2.address),
         ]);
 
@@ -345,7 +345,7 @@ Clarinet.test({
         setTrustedOracle(chain, deployer.address);
 
         let block = chain.mineBlock([
-            Tx.contractCall(contractName, "open-new-dlc", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
+            Tx.contractCall(contractName, "create-dlc-internal", [types.buff(UUID), types.buff(BTChex), types.uint(0), types.uint(0), types.principal(wallet_1.address)], deployer.address),
             Tx.contractCall(contractName, "close-dlc-internal", [types.buff(UUID), packageCV.timestamp, packageCV.prices, signature], deployer.address),
             Tx.contractCall(contractName, "get-dlc-closing-price-and-time", [types.buff(UUID)], wallet_1.address),
         ]);

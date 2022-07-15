@@ -39,7 +39,7 @@
   (map-get? dlcs uuid))
 
 ;;opens a new dlc
-(define-public (open-new-dlc (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint) (creator principal))
+(define-public (create-dlc-internal (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint) (creator principal))
   (begin
     (asserts! (is-eq contract-owner tx-sender) err-unauthorised)
     (asserts! (is-none (map-get? dlcs uuid)) err-dlc-already-added)
@@ -57,7 +57,7 @@
       closing-time: closing-time,
       emergency-refund-time: emergency-refund-time,
       creator: creator })
-    (nft-mint? open-dlc uuid .dlc-manager-pricefeed-v1))) ;;mint an open-dlc nft to keep track of open dlcs
+    (nft-mint? open-dlc uuid .dlc-manager-pricefeed-v1-01))) ;;mint an open-dlc nft to keep track of open dlcs
 
 ;;emits an event - see README for more details
 ;;UUID: a unique 8 character string
@@ -87,7 +87,8 @@
     (asserts! (>= block-timestamp (get closing-time dlc)) err-not-reached-closing-time)
     (print { 
       uuid: uuid, 
-      asset: (get asset dlc) 
+      asset: (get asset dlc),
+      closing-time: (get closing-time dlc)
       })
     (ok true)
   ))
@@ -101,7 +102,8 @@
     (asserts! (is-eq contract-owner tx-sender) err-unauthorised)
     (print { 
       uuid: uuid, 
-      asset: (get asset dlc) 
+      asset: (get asset dlc) ,
+      closing-time: (get closing-time dlc)
       })
     (ok true)
   ))
@@ -127,7 +129,7 @@
       uuid: uuid,
       closing-price: (get value (element-at entries u0)),
       actual-closing-time: (/ timestamp u1000)})
-    (nft-burn? open-dlc uuid .dlc-manager-pricefeed-v1))) ;;burn the open-dlc nft related to the UUID
+    (nft-burn? open-dlc uuid .dlc-manager-pricefeed-v1-01))) ;;burn the open-dlc nft related to the UUID
 
 ;; get the closing price of the DLC by UUID
 (define-read-only (get-dlc-closing-price-and-time (uuid (buff 8)))
