@@ -3,10 +3,10 @@ import {
   senderKey,
   contractAddress,
   contractName,
-  UUID,
   assetName,
   unixTimeStamp,
-  strikePrice
+  strikePrice,
+  testCreatorKey
 } from "./common";
 
 import {
@@ -24,13 +24,12 @@ const txOptions = {
   contractName: contractName,
   functionName: functionName,
   functionArgs: [
-    bufferCVFromString(UUID),
     bufferCVFromString(assetName), // asset
     uintCV(strikePrice),
     uintCV(unixTimeStamp), // closing-time
     uintCV(unixTimeStamp), // emergency-refund-time
   ],
-  senderKey: senderKey,
+  senderKey: testCreatorKey,
   validateWithAbi: true,
   network,
   fee: 100000,
