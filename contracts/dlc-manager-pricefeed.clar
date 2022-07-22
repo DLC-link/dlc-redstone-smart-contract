@@ -14,6 +14,8 @@
 ;;CONTRACT OWNER
 (define-constant contract-owner tx-sender)
 
+(use-trait cb-trait .dlc-create-callback-trait.dlc-create-callback-trait)
+
 ;; A map of all trusted oracles, indexed by their 33 byte compressed public key.
 (define-map trusted-oracles (buff 33) bool)
 
@@ -38,8 +40,28 @@
 (define-read-only (get-dlc (uuid (buff 8)))
   (map-get? dlcs uuid))
 
-;;opens a new dlc
-(define-public (create-dlc-internal (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint) (creator principal))
+;;emits an event - see README for more details
+;;asset: the ticker symbol for the asset that will be used to closing price data, e.g. 'btc' (https://github.com/redstone-finance/redstone-api/blob/main/docs/ALL_SUPPORTED_TOKENS.md)
+;;strike-price: the over/under price for the DLC bet
+;;closing-time: the UTC time in seconds after which the contract can be closed, and will fetch the closing price
+;;emergency-refund-time: the time at which the DLC will be available for refund
+;;the calling contracts name
+;;nonce provided for the dlc
+(define-public (create-dlc (asset (buff 32)) (strike-price uint) (closing-time uint) (emergency-refund-time uint) (callback-contract <cb-trait>) (nonce uint))
+  (begin 
+    (print {
+      asset: asset, 
+      strike-price: strike-price,
+      closing-time: closing-time, 
+      emergency-refund-time: emergency-refund-time,
+      creator: tx-sender,
+      callback-contract: callback-contract,
+      nonce: nonce})
+      (ok true)
+    ))
+
+;;opens a new dlc - called by the DLC Oracle system
+(define-public (create-dlc-internal (uuid (buff 8)) (asset (buff 32)) (closing-time uint) (emergency-refund-time uint) (creator principal) (callback-contract <cb-trait>) (nonce uint))
   (begin
     (asserts! (is-eq contract-owner tx-sender) err-unauthorised)
     (asserts! (is-none (map-get? dlcs uuid)) err-dlc-already-added)
@@ -51,6 +73,7 @@
       actual-closing-time: u0, 
       emergency-refund-time: emergency-refund-time,
       creator: creator })
+    (try! (as-contract (contract-call? callback-contract post-create-handler nonce uuid)))
     (print {
       uuid: uuid, 
       asset: asset, 
@@ -58,23 +81,6 @@
       emergency-refund-time: emergency-refund-time,
       creator: creator })
     (nft-mint? open-dlc uuid .dlc-manager-pricefeed-v1-01))) ;;mint an open-dlc nft to keep track of open dlcs
-
-;;emits an event - see README for more details
-;;UUID: a unique 8 character string
-;;asset: the ticker symbol for the asset that will be used to closing price data, e.g. 'btc' (https://github.com/redstone-finance/redstone-api/blob/main/docs/ALL_SUPPORTED_TOKENS.md)
-;;strike-price: the over/under price for the DLC bet
-;;closing-time: the UTC time in seconds after which the contract can be closed, and will fetch the closing price
-;;emergency-refund-time: the time at which the DLC will be available for refund
-(define-public (create-dlc (uuid (buff 8)) (asset (buff 32)) (strike-price uint) (closing-time uint) (emergency-refund-time uint))
-  (begin 
-    (print {
-      uuid: uuid,
-      asset: asset, 
-      strike-price: strike-price,
-      closing-time: closing-time, 
-      emergency-refund-time: emergency-refund-time,
-      creator: tx-sender})
-    (ok true)))
 
 ;; External close-dlc request
 (define-public (close-dlc (uuid (buff 8))) 
@@ -112,7 +118,7 @@
 (define-public (close-dlc-internal (uuid (buff 8)) (timestamp uint) (entries (list 10 {symbol: (buff 32), value: uint})) (signature (buff 65)))
   (let (
     ;; Recover the pubkey of the signer.
-		(signer (try! (contract-call? 'STDBEG5X8XD50SPM1JJH0E5CTXGDV5NJTJTTH7YB.redstone-verify recover-signer timestamp entries signature)))
+		(signer (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.redstone-verify recover-signer timestamp entries signature)))
     (dlc (unwrap! (get-dlc uuid) err-unknown-dlc))
     (block-timestamp (get-last-block-timestamp))
     )
