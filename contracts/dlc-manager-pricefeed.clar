@@ -19,12 +19,15 @@
 ;; A map of all trusted oracles, indexed by their 33 byte compressed public key.
 (define-map trusted-oracles (buff 33) bool)
 
-;;NFT to keep track of the open dlcs easily
+;; NFT to keep track of the open dlcs easily
 (define-non-fungible-token open-dlc (buff 8))
 
+;; NFT to keep track of registered contracts
+(define-non-fungible-token registered-contract principal)
+
 (define-map dlcs
-	(buff 8)
-	{
+  (buff 8)
+  {
     uuid: (buff 8),
     asset: (buff 32),
     closing-time: uint,  ;;seconds because stacks block has the timestamp in seconds
@@ -32,7 +35,7 @@
     actual-closing-time: uint,
     emergency-refund-time: uint,
     creator: principal
-	})
+  })
 
 (define-read-only (get-last-block-timestamp)
   (default-to u0 (get-block-info? time (- block-height u1))))
@@ -83,7 +86,7 @@
     (nft-mint? open-dlc uuid .dlc-manager-pricefeed-v1-01))) ;;mint an open-dlc nft to keep track of open dlcs
 
 ;; External close-dlc request
-(define-public (close-dlc (uuid (buff 8))) 
+(define-public (close-dlc (uuid (buff 8)))
   (let (
     (dlc (unwrap! (get-dlc uuid) err-unknown-dlc))
     (block-timestamp (get-last-block-timestamp))
@@ -118,14 +121,14 @@
 (define-public (close-dlc-internal (uuid (buff 8)) (timestamp uint) (entries (list 10 {symbol: (buff 32), value: uint})) (signature (buff 65)))
   (let (
     ;; Recover the pubkey of the signer.
-		(signer (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.redstone-verify recover-signer timestamp entries signature)))
+    (signer (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.redstone-verify recover-signer timestamp entries signature)))
     (dlc (unwrap! (get-dlc uuid) err-unknown-dlc))
     (block-timestamp (get-last-block-timestamp))
     )
     ;; Check if the signer is a trusted oracle.
-		(asserts! (is-trusted-oracle signer) err-untrusted-oracle)
-		;; Check if the data is not stale, depending on how the app is designed.
-		(asserts! (> timestamp block-timestamp) err-stale-data) ;; timestamp should be larger than the last block timestamp.
+    (asserts! (is-trusted-oracle signer) err-untrusted-oracle)
+    ;; Check if the data is not stale, depending on how the app is designed.
+    (asserts! (> timestamp block-timestamp) err-stale-data) ;; timestamp should be larger than the last block timestamp.
     ;;DLC related checks
     (asserts! (is-eq (unwrap-panic (get symbol (element-at entries u0))) (get asset dlc)) err-not-the-same-assets) ;;check if the submitted asset is the same what was logged in the DLC
     (asserts! (is-none (get closing-price dlc)) err-already-closed)
@@ -150,31 +153,33 @@
 
 
 (define-read-only (is-trusted-oracle (pubkey (buff 33)))
-	(default-to false (map-get? trusted-oracles pubkey))
+  (default-to false (map-get? trusted-oracles pubkey))
 )
 
 ;; #[allow(unchecked_data)]
 (define-public (set-trusted-oracle (pubkey (buff 33)) (trusted bool))
-	(begin
-		(asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
-		(ok (map-set trusted-oracles pubkey trusted))
-	)
+  (begin
+    (asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
+    (ok (map-set trusted-oracles pubkey trusted))
+  )
 )
 
-(define-public (register-contract (contract-address <cb-trait>)) 
+(define-public (register-contract (contract-address principal))
   (begin
-		(asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
+    (asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
     (print { contract-address: contract-address })
-		;; (ok (map-set registered-contracts contract-address))
-    (ok true)
-	)
+    (nft-mint? registered-contract contract-address tx-sender)
+  )
 )
 
-(define-public (unregister-contract (contract-address <cb-trait>)) 
+(define-public (unregister-contract (contract-address principal))
   (begin
-		(asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
+    (asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
     (print { contract-address: contract-address })
-		;; (ok (map-set registered-contracts contract-address))
-    (ok true)
-	)
+    (nft-burn? registered-contract contract-address tx-sender)
+  )
+)
+
+(define-read-only (is-contract-registered (contract-address principal))
+  (nft-get-owner? registered-contract contract-address)
 )
