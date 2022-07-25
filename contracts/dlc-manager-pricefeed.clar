@@ -181,5 +181,5 @@
 )
 
 (define-read-only (is-contract-registered (contract-address principal))
-  (nft-get-owner? registered-contract contract-address)
+  (is-some (nft-get-owner? registered-contract contract-address))
 )
