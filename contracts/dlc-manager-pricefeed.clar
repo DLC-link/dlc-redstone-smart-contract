@@ -169,3 +169,12 @@
     (ok true)
 	)
 )
+
+(define-public (unregister-contract (contract-address <cb-trait>)) 
+  (begin
+		(asserts! (is-eq contract-owner tx-sender) err-not-contract-owner)
+    (print { contract-address: contract-address })
+		;; (ok (map-set registered-contracts contract-address))
+    (ok true)
+	)
+)
